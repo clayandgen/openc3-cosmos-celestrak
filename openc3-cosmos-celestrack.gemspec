@@ -3,9 +3,9 @@
 # Create the overall gemspec
 Gem::Specification.new do |s|
   s.name = 'openc3-cosmos-celestrak'
-  s.summary = 'CelesTrack API'
+  s.summary = 'CelesTrak API'
   s.description = <<-EOF
-    Enables receiving TLE from CelesTrack API
+    Enables receiving TLE from CelesTrak API
   EOF
   s.license = 'MIT'
   s.authors = ['Clay Kramp']
