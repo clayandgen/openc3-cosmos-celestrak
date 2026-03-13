@@ -1,0 +1,22 @@
+# Set VARIABLEs here to allow variation in your plugin
+
+VARIABLE celestrak_target_name CELESTRAK_OBJECT
+VARIABLE_DESCRIPTION "Target name for the CelesTrak object"
+VARIABLE celestrack_hostname celestrak.org
+VARIABLE_DESCRIPTION "CelesTrak API hostname"
+VARIABLE celestrack_protocol https
+VARIABLE_DESCRIPTION "Protocol for CelesTrak API (https)"
+VARIABLE celestrack_port 443
+VARIABLE_DESCRIPTION "Port for CelesTrak API"
+VARIABLE catalog_number 25544
+VARIABLE_DESCRIPTION "NORAD catalog number for the satellite (default 25544 = ISS)"
+VARIABLE poll_period 43200
+VARIABLE_DESCRIPTION "Polling interval in seconds (default 43200 = 12 hours, 0 to disable)"
+
+TARGET OBJECT <%= celestrak_target_name %>
+INTERFACE <%= celestrak_target_name %>_INT openc3/interfaces/http_client_interface.py <%= celestrack_hostname %> <%= celestrack_port %> <%= celestrack_protocol %> 5.0 5.0
+  MAP_TARGET <%= celestrak_target_name %>
+  OPTION CONNECT_CMD DONT_LOG "<%= celestrak_target_name %> GET_OMM"
+  <% if poll_period.to_f > 0.0 %>
+  OPTION PERIODIC_CMD DONT_LOG <%= poll_period %> "<%= celestrak_target_name %> GET_OMM"
+  <% end %>

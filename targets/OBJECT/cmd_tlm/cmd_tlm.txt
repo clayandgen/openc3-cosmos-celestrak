@@ -1,0 +1,69 @@
+COMMAND <%= target_name %> GET_OMM BIG_ENDIAN "Get OMM (Orbit Mean-elements Message) data from CelesTrak GP API"
+  ACCESSOR openc3/accessors/http_accessor.py
+  PARAMETER HTTP_PATH 0 0 DERIVED nil nil "/NORAD/elements/gp.php?CATNR=<%= catalog_number %>&FORMAT=JSON"
+  PARAMETER HTTP_METHOD 0 0 DERIVED nil nil "GET"
+  PARAMETER HTTP_PACKET 0 0 DERIVED nil nil "OMM_RESPONSE"
+  PARAMETER HTTP_ERROR_PACKET 0 0 DERIVED nil nil "ERROR_RESPONSE"
+
+TELEMETRY <%= target_name %> OMM_RESPONSE BIG_ENDIAN "OMM response from CelesTrak GP API"
+  ACCESSOR openc3/accessors/http_accessor.py openc3/accessors/json_accessor.py
+  TEMPLATE '[{"OBJECT_NAME":"","OBJECT_ID":"","EPOCH":"","MEAN_MOTION":0.0,"ECCENTRICITY":0.0,"INCLINATION":0.0,"RA_OF_ASC_NODE":0.0,"ARG_OF_PERICENTER":0.0,"MEAN_ANOMALY":0.0,"EPHEMERIS_TYPE":0,"CLASSIFICATION_TYPE":"","NORAD_CAT_ID":0,"ELEMENT_SET_NO":0,"REV_AT_EPOCH":0,"BSTAR":0.0,"MEAN_MOTION_DOT":0.0,"MEAN_MOTION_DDOT":0.0}]'
+  ITEM HTTP_STATUS 0 0 DERIVED "HTTP response status code"
+  # Identification
+  APPEND_ITEM OBJECT_NAME 256 STRING "Satellite name"
+    KEY $[0].OBJECT_NAME
+  APPEND_ID_ITEM OBJECT_ID 72 STRING "International designator"
+    KEY $[0].OBJECT_ID
+  APPEND_ITEM NORAD_CAT_ID 32 INT "NORAD Catalog ID"
+    KEY $[0].NORAD_CAT_ID
+  APPEND_ITEM CLASSIFICATION_TYPE 8 STRING "Classification (U=unclassified)"
+    KEY $[0].CLASSIFICATION_TYPE
+  # Epoch
+  APPEND_ITEM EPOCH 208 STRING "Epoch timestamp (ISO 8601)"
+    KEY $[0].EPOCH
+  # Keplerian orbital elements
+  APPEND_ITEM INCLINATION 64 FLOAT "Inclination"
+    KEY $[0].INCLINATION
+    UNITS DEGREES °
+    FORMAT_STRING "%.4f"
+  APPEND_ITEM RA_OF_ASC_NODE 64 FLOAT "Right Ascension of Ascending Node"
+    KEY $[0].RA_OF_ASC_NODE
+    UNITS DEGREES °
+    FORMAT_STRING "%.4f"
+  APPEND_ITEM ECCENTRICITY 64 FLOAT "Eccentricity"
+    KEY $[0].ECCENTRICITY
+    FORMAT_STRING "%.7f"
+  APPEND_ITEM ARG_OF_PERICENTER 64 FLOAT "Argument of Pericenter"
+    KEY $[0].ARG_OF_PERICENTER
+    UNITS DEGREES °
+    FORMAT_STRING "%.4f"
+  APPEND_ITEM MEAN_ANOMALY 64 FLOAT "Mean Anomaly"
+    KEY $[0].MEAN_ANOMALY
+    UNITS DEGREES °
+    FORMAT_STRING "%.4f"
+  APPEND_ITEM MEAN_MOTION 64 FLOAT "Mean Motion"
+    KEY $[0].MEAN_MOTION
+    UNITS "REVOLUTIONS/DAY" rev/day
+    FORMAT_STRING "%.8f"
+  # Derivatives and drag
+  APPEND_ITEM MEAN_MOTION_DOT 64 FLOAT "First derivative of mean motion"
+    KEY $[0].MEAN_MOTION_DOT
+    FORMAT_STRING "%.8f"
+  APPEND_ITEM MEAN_MOTION_DDOT 64 FLOAT "Second derivative of mean motion"
+    KEY $[0].MEAN_MOTION_DDOT
+    FORMAT_STRING "%.14f"
+  APPEND_ITEM BSTAR 64 FLOAT "BSTAR drag term"
+    KEY $[0].BSTAR
+    FORMAT_STRING "%.10f"
+  # Element set info
+  APPEND_ITEM EPHEMERIS_TYPE 32 INT "Ephemeris type"
+    KEY $[0].EPHEMERIS_TYPE
+  APPEND_ITEM ELEMENT_SET_NO 32 INT "Element set number"
+    KEY $[0].ELEMENT_SET_NO
+  APPEND_ITEM REV_AT_EPOCH 32 INT "Revolution number at epoch"
+    KEY $[0].REV_AT_EPOCH
+
+TELEMETRY <%= target_name %> ERROR_RESPONSE BIG_ENDIAN "Error response from CelesTrak GP API"
+  ACCESSOR openc3/accessors/http_accessor.py
+  ITEM HTTP_STATUS 0 0 DERIVED "HTTP response status code"
+  APPEND_ITEM BODY 4096 STRING "Raw error response body"
