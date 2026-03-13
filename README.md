@@ -2,7 +2,7 @@
 
 ![CelesTrak](public/store_img.png)
 
-An OpenC3 COSMOS plugin that retrieves Orbit Mean-Elements Message (OMM) data from the [CelesTrak GP API](https://celestrak.org/NORAD/elements/gp.php) in JSON format.
+An OpenC3 COSMOS plugin that retrieves Orbit Mean-Elements Message (OMM) data from the [CelesTrak GP API](https://celestrak.org/) in JSON format.
 
 ## Plugin Variables
 
@@ -23,3 +23,7 @@ An OpenC3 COSMOS plugin that retrieves Orbit Mean-Elements Message (OMM) data fr
 
 - **OMM_RESPONSE** - Satellite identification, epoch, Keplerian orbital elements, mean motion derivatives, BSTAR drag, and element set info
 - **ERROR_RESPONSE** - Raw HTTP status code and response body when the API returns an error
+
+## CelesTrak Usage Notice
+
+[CelesTrak](https://celestrak.org/) is a 501(c)(3) nonprofit organization providing space data to the public free of charge. For commercial use of CelesTrak data or services, please contact CelesTrak directly at https://celestrak.org/.
